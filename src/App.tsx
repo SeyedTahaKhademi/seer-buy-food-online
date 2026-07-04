@@ -8,7 +8,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, ChefHat, Truck, PhoneCall, LogIn, LogOut, Wallet, 
   Dna, Flame, ShieldAlert, ArrowRight, Star, Clock, Heart, ClipboardCheck,
-  Dumbbell, Award, Apple, Lock, Phone, MapPin, Mail, RefreshCw, BarChart3, Package
+  Dumbbell, Award, Apple, Lock, Phone, MapPin, Mail, RefreshCw, BarChart3, Package,
+  Menu, X
 } from 'lucide-react';
 
 import GarlicLogo from './components/GarlicLogo';
@@ -31,6 +32,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'planner' | 'blog' | 'dashboard' | 'admin'>('home');
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Current active logged in staff member
   const [currentStaff, setCurrentStaff] = useState<StaffMember | null>(null);
@@ -343,9 +345,107 @@ export default function App() {
                 <span>ورود / عضویت</span>
               </button>
             )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden flex items-center justify-center p-2.5 rounded-xl border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 transition-colors focus:outline-hidden"
+              aria-label="منوی اصلی"
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
 
         </div>
+
+        {/* Mobile Dropdown Menu with Framer Motion */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden overflow-hidden border-t border-stone-100 bg-white px-6 py-4"
+            >
+              <nav className="flex flex-col gap-3 text-sm font-semibold text-stone-600">
+                <button 
+                  onClick={() => {
+                    setActiveTab('home');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2.5 py-2.5 text-right rounded-lg px-2 hover:bg-stone-50 hover:text-emerald-700 transition ${activeTab === 'home' ? 'text-emerald-700 bg-emerald-50/50 font-bold' : ''}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'home' ? 'bg-emerald-600' : 'bg-stone-300'}`} />
+                  صفحه اصلی
+                </button>
+                <button 
+                  onClick={() => {
+                    setActiveTab('planner');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2.5 py-2.5 text-right rounded-lg px-2 hover:bg-stone-50 hover:text-emerald-700 transition ${activeTab === 'planner' ? 'text-emerald-700 bg-emerald-50/50 font-bold' : ''}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'planner' ? 'bg-emerald-600' : 'bg-stone-300'}`} />
+                  طراح رژیم هوشمند
+                </button>
+                <button 
+                  onClick={() => {
+                    setActiveTab('blog');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2.5 py-2.5 text-right rounded-lg px-2 hover:bg-stone-50 hover:text-emerald-700 transition ${activeTab === 'blog' ? 'text-emerald-700 bg-emerald-50/50 font-bold' : ''}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'blog' ? 'bg-emerald-600' : 'bg-stone-300'}`} />
+                  وبلاگ سیر سلامت
+                </button>
+                <button 
+                  onClick={() => {
+                    if (user) {
+                      setActiveTab('dashboard');
+                    } else {
+                      setIsAuthModalOpen(true);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center gap-2.5 py-2.5 text-right rounded-lg px-2 hover:bg-stone-50 hover:text-emerald-700 transition ${activeTab === 'dashboard' ? 'text-emerald-700 bg-emerald-50/50 font-bold' : ''}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'dashboard' ? 'bg-emerald-600' : 'bg-stone-300'}`} />
+                  داشبورد من
+                </button>
+                {currentStaff && (
+                  <button 
+                    onClick={() => {
+                      setActiveTab('admin');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-2.5 py-2.5 text-right rounded-lg px-2 hover:bg-stone-50 hover:text-emerald-700 transition ${activeTab === 'admin' ? 'text-emerald-700 bg-emerald-50/50 font-bold' : ''}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'admin' ? 'bg-emerald-600' : 'bg-stone-300'}`} />
+                    پنل کادر سیر
+                  </button>
+                )}
+                
+                {/* Micro Wallet Balances badge inside mobile menu for extra utility */}
+                {user && (
+                  <div 
+                    onClick={() => {
+                      setActiveTab('dashboard');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex sm:hidden items-center justify-between gap-2 rounded-xl bg-emerald-50 px-4 py-3.5 text-xs text-emerald-800 font-bold border border-emerald-100/50 mt-2 cursor-pointer hover:bg-emerald-100 transition"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Wallet size={14} />
+                      <span>موجودی کیف پول</span>
+                    </div>
+                    <span>{user.walletBalance.toLocaleString('fa-IR')} تومان</span>
+                  </div>
+                )}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* 2. DYNAMIC CONTENT AREA */}
