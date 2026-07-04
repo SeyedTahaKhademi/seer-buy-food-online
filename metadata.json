@@ -1,0 +1,6 @@
+{
+  "name": "سیر - پلتفرم غذای رژیمی و ورزشی",
+  "description": "سامانه هوشمند اشتراک و برنامه‌ریزی غذاهای رژیمی و ورزشی سیر همراه با داشبورد مدیریت، CRM و رهگیری سفارشات",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
